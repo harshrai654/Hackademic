@@ -1,7 +1,14 @@
 const express = require('express');         //For handling HTTP-requests
 const app = express();    
+require("dotenv").config();
 const port = process.env.port || 3000 ;
 const constants = require("./constants");
+const bodyParser = require("body-parser");
+const Nexmo = require("nexmo");
+const nexmo = new Nexmo({
+  apiKey : process.env.OTP_API_KEY,
+  apiSecret : process.env.OTP_SECREAT_KEY
+});
 
 //DB
 const {MongoClient} = require('mongodb'); 
@@ -21,6 +28,7 @@ app.use(session({
   resave: false,
   saveUninitialized : true
 }))
+app.use(bodyParser.json());
 
 //connecting to DB
 db.connect(client).catch(console.error);
@@ -59,6 +67,51 @@ app.get("/api/getBanks", (req,res)=>{
   } 
     
 
+})
+
+app.post("/api/sendOTP",(req,res)=>{
+  if(req.session.id){
+    const mobile = req.body.mobile;
+    nexmo.verify.request({
+      number :  "91" + mobile,
+      brand : constants.names.BRAND,
+      code_length : "4"
+    },(err,result)=>{
+      if(err)res.send({status:false});
+      else{
+        if(result.error_text)res.send({status:false})
+        else res.send({status:true,req_id:result.request_id});
+        console.log(result);
+      }
+    })
+  }
+
+  //console.log(req.body)
+  
+})
+
+app.post("/api/verifyOTP",(req,res)=>{
+  console.log(req.body)
+  if(req.session.id){
+    const otp = req.body.otp;
+    const reqId = req.body.reqId;
+
+    nexmo.verify.check({
+      request_id : reqId,
+      code : otp,
+    },(err,result)=>{
+      console.log(result)
+      if(err)res.send({status:false});
+      else{
+        if(result.error_text)res.send({status:false})
+        else res.send({status:true});
+        console.log(result);
+      }
+    })
+  }
+
+  //console.log(req.body)
+  
 })
 
 app.listen(port, () => {
