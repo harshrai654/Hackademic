@@ -1,7 +1,9 @@
 import React from "react";
-import {Row,Col} from "antd";
+import {Row,Col,Divider,Button} from "antd";
+import {RightOutlined} from "@ant-design/icons"; 
 import BankSelector from "../Components/BankSelector";
 import BankMap from "../Components/BankMap";
+import Availability from "../Components/Availability";
 import utils from "../utils";
 
 class HomePage extends React.Component{
@@ -11,8 +13,11 @@ class HomePage extends React.Component{
         this.state = {
             banks : [],
             bank : {},
-            key : ""
+            key : "",
+            date : ""
         }
+
+        this.onDateSelect = this.onDateSelect.bind(this);
     }
 
     componentDidMount(){
@@ -32,11 +37,20 @@ class HomePage extends React.Component{
         }))
     }
 
+    onDateSelect(date){
+        this.setState({
+            date: new Date(date._d)
+        })
+    }
+
     render(){
+        var disbaled = !(this.state.bank && this.state.date);
         return(
-           <Row gutter={16}>
+            <Row justify="center" align="middle" gutter={24}>
                <Col className = "gutter-row" offset = {1} span={10}>
                     <BankSelector banks={this.state.banks} handleBankChange={(index)=>{this.handleBankChange(index)}}/>
+                    <Divider/>
+                    <Availability avbl = {this.state.bank.avbl} selectedDate={this.state.date} onDateSelect={this.onDateSelect}/>
                </Col>
                <Col className = "gutter-row" offset = {1} span={10}>
                     <BankMap location={{
@@ -45,8 +59,14 @@ class HomePage extends React.Component{
                             key: this.state.key,
                             name : this.state.bank.name
                         }}/>
+                    <Divider/>
+                    <Row justify="end">
+                        <Button size="large" icon={<RightOutlined />} type="primary"  disabled={disbaled}>
+                            Next
+                        </Button>  
+                    </Row>
                </Col>
-           </Row>     
+            </Row>     
         ); 
     }
 };

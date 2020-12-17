@@ -14,7 +14,7 @@ const BankMap = function(props){
     return(   
         <Card title="Location" style={{
             width: '40vw',
-            height: '60vh'
+            height: '73vh'
           }}>
             {(props.location.lat && props.location.lng) ? 
             (<Map 
