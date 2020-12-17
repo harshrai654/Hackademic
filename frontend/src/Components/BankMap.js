@@ -1,24 +1,42 @@
 import React from "react";
-import GoogleMapReact from "google-map-react";
+import {Map,GoogleApiWrapper,Marker} from "google-maps-react";
 import {Card} from "antd";
 
 const BankMap = function(props){
-    return(
-        <Card title="Directions" style={{height:"100%",width:"100%"}}>
-            {props.lat && props.lng ? (<GoogleMapReact 
-                bootstrapURLKeys={{key:props.key}}
-                defaultCenter={{
-                    lat : props.lat,
-                    lng : props.lng
-                }}
-                defaultZoom = {11}
+    const containerStyle = { 
+        width: '100%',
+        height: '100%'
+    }
+    const location = {
+        lat : props.location.lat,
+        lng : props.location.lng
+    }
+    return(   
+        <Card title="Location" style={{
+            width: '40vw',
+            height: '60vh'
+          }}>
+            {(props.location.lat && props.location.lng) ? 
+            (<Map 
+                google={props.google}
+                containerStyle={containerStyle}
+                style={{height:"75%",width:"90%"}}
+                initialCenter = {location}
+                center={location}
+                zoom = {16}
             >
-
-            </GoogleMapReact>):(
-               <p>Select a bank to know its location!</p> 
+                <Marker
+                    position={location}
+                    name={props.location.name}
+                />
+            </Map>):(
+                <p>Select a bank to know its location!</p> 
             )}
-        </Card>
+        </Card> 
     )
 }
 
-export default BankMap;
+export default GoogleApiWrapper((props) => ({
+    apiKey: props.location.key,
+  }
+))(BankMap);

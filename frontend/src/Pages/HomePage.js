@@ -21,7 +21,7 @@ class HomePage extends React.Component{
             this.setState({banks})
         })
 
-        utils.fetchBanks().then(key=>{
+        utils.fetchAPIkey().then(key=>{
             this.setState({key})
         })
     }
@@ -41,8 +41,9 @@ class HomePage extends React.Component{
                <Col className = "gutter-row" offset = {1} span={10}>
                     <BankMap location={{
                             lat:this.state.bank.lat,
-                            lng:this.state.lng,
-                            key: this.state.key
+                            lng:this.state.bank.lng,
+                            key: this.state.key,
+                            name : this.state.bank.name
                         }}/>
                </Col>
            </Row>     
