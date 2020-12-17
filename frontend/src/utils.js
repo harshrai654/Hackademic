@@ -9,7 +9,11 @@ const utils = {
         return axios.get("/api/fetchKey").then(response=>response.data);
     },
     sendOTP : function(mobile){
-        return axios.post("/api/sendOTP").then(response => response.data);
+        return axios.post("/api/sendOTP",{mobile}).then(response => response.data);
+    },
+    verifyOTP : function(obj){
+        console.log(obj)
+        return axios.post("/api/verifyOTP",{otp:obj.otp,reqId:obj.reqId}).then(response => response.data);
     }
 }
 
