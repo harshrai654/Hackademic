@@ -29,6 +29,15 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
+app.get("/api/fetchKey",(req,res)=>{
+  if(req.session.id){
+    console.log(constants.messages.AUTH_SUCC)
+    res.send(process.env.MAP_API_KEY)
+  }else{
+    console.log(constants.messages.AUTH_FAIL);
+    res.status(401);
+  }
+})
 
 app.get("/api/getBanks", (req,res)=>{
 
@@ -44,8 +53,11 @@ app.get("/api/getBanks", (req,res)=>{
         res.json(docs)
       }
     })
-  }else 
+  }else{
     console.log(constants.messages.AUTH_FAIL)
+    res.status(401);
+  } 
+    
 
 })
 
