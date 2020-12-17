@@ -7,6 +7,9 @@ const utils = {
 
     fetchAPIkey: function(){
         return axios.get("/api/fetchKey").then(response=>response.data);
+    },
+    sendOTP : function(mobile){
+        return axios.post("/api/sendOTP").then(response => response.data);
     }
 }
 
