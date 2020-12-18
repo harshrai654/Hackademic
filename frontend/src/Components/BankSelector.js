@@ -2,18 +2,15 @@ import React from "react";
 import {Select} from "antd";
 const { Option } = Select;
 
-function handleBankChange(value) {
-    console.log(`selected ${value}`);
-}
 
 const BankSelector = function(props){
     return(
-        <Select defaultValue="Select Bank" onChange={handleBankChange}>
+        <Select style={{width:"80%"}} placeholder="Select Bank" onChange={(value)=>{props.handleBankChange(value)}}>
             
-            {props.banks.map(bank => {
+            {props.banks.map((bank,index) => {
                 //console.log(bank);
                 return(
-                    <Option value={bank.name} key={bank._id}>
+                    <Option value={index} key={bank._id}>
                         {bank.name}
                     </Option>
                 );
