@@ -9,10 +9,13 @@ const rl = readline.createInterface({
 });
 
 const createDateArray = function(){
-    let date = new Date(), dates=[];
-    for(let i = 1; i < 15; i++){
+    let dates = [];
+    for(let i = 0; i < 14; i++){
+        let date = new Date().setUTCHours(0,0,0,0)
+        date = new Date(date);
+        date = date.setDate(date.getDate() + i)
+        date = new Date(date)
         dates.push(date);
-        date = new Date(date.setDate(date.getDate() + 1))
     }
     return dates;
 }
@@ -28,8 +31,11 @@ module.exports = {
                         bank.lat = lat;
                         rl.question(constants.init.BANK_LNG, lng=>{
                             bank.lng = lng;
-                            bank.avbl = createDateArray();
-                            db.addBank(bank,client)
+                            rl.question(constants.init.BANK_CAP, cap=>{
+                                bank.cap = cap;
+                                bank.avbl = createDateArray();
+                                db.addBank(bank,client)
+                            })
                         })
                     })
                 })

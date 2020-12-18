@@ -122,6 +122,17 @@ app.post("/api/verifyOTP",(req,res)=>{
   
 })
 
+app.post("/api/getBankData",(req,res)=>{
+  if(req.session.reqId){
+    db.fetchBankData(req.body,client,(data)=>{
+      console.log(data)
+      res.json(data)
+    })
+  }else{
+    res.sendStatus(401)
+  }
+})
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 
