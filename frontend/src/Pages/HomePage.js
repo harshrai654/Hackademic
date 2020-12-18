@@ -47,8 +47,9 @@ class HomePage extends React.Component{
     }
 
     onDateSelect(date){
+        console.log(date._d)
         this.setState({
-            date: new Date(date._d)
+            date: new Date((new Date(date._d)).setUTCHours(0,0,0,0))
         })
     }
 
