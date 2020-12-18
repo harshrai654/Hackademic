@@ -2,9 +2,7 @@ const axios = require("axios");
 
 const utils = {
     fetchBanks: function(){
-        axios.get("/api/getBanks").then(response=>{
-            console.log(response);
-        })
+        return axios.get("/api/getBanks").then(response=>response.data);
     }
 }
 

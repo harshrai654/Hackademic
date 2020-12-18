@@ -13,8 +13,8 @@ const BankSelector = function(props){
             {props.banks.map(bank => {
                 //console.log(bank);
                 return(
-                    <Option value={bank}>
-                        {bank}
+                    <Option value={bank.name} key={bank._id}>
+                        {bank.name}
                     </Option>
                 );
             })}
