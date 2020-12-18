@@ -1,6 +1,5 @@
 import React from "react";
 import {Calendar,Card,Alert} from "antd";
-import moment from "moment";
 
 const Availability = function(props){
     
@@ -17,7 +16,6 @@ const Availability = function(props){
                         }
                         onSelect={props.onDateSelect}
                         headerRender={()=>null}
-                        validRange={[moment(),moment().add(14,"days")]}
                     />
                 </div>
             ):(
@@ -32,17 +30,16 @@ const filterDate = function(date,avblDates){
     const currDate = date._d;
     const day = date.day();
     const diff = +currDate-Date.now();
-
     //console.log(day)
     if(day === 0 || day === 6)return true;
-    if(diff < 0)return true;
+    if(diff < -86400000)return true;
     if(diff > 14*1000*60*60*24)return true;     //14 days advance 
     const found = avblDates.find((dateElem)=>{
         const avblDate = new Date(dateElem);
         return currDate.getDate() === avblDate.getDate()
     })
 
-    return found;
+    return !found;
 }
 
 
