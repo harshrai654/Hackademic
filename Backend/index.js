@@ -1,12 +1,16 @@
 const express = require('express');         //For handling HTTP-requests
 const app = express();    
 const port = process.env.port || 3000 ;
+const constants = require("./constants");
+
+//DB
+const {MongoClient} = require('mongodb'); 
 const db = require("./db");
+const client = new MongoClient(process.env.URI , { useNewUrlParser: true, useUnifiedTopology: true })
 
-const DB_NAME = "qmgm";
 
-const client = db.connect().catch(console.error);
-
+//connecting to DB
+db.connect(client).catch(console.error);
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -18,7 +22,20 @@ app.get('/example', (req, res) => {
 })
 
 app.get("/api/getBanks", (req,res)=>{
-  const db = client.db(DB_NAME);
+
+  //console.log(client)
+  const db = client.db(constants.names.DB_NAME);
+  const bankCollection = db.collection(constants.names.COLLECTION_NAME);
+
+  bankCollection.find({}).toArray((err,docs)=>{
+    if(err){
+      console.log(constants.messages.BANK_DOC_FAIL)
+    }else{
+      console.log(constants.messages.BANKS_REQ)
+      res.json(docs)
+    }
+  })
+  
 })
 
 app.listen(port, () => {
