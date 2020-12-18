@@ -3,9 +3,10 @@ const app = express();
 const port = process.env.port || 3000 ;
 const db = require("./db");
 
+const DB_NAME = "qmgm";
+
 const client = db.connect().catch(console.error);
 
-// console.log(process.env.URI);
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -17,7 +18,7 @@ app.get('/example', (req, res) => {
 })
 
 app.get("/api/getBanks", (req,res)=>{
-  // client.db("qmgm")
+  const db = client.db(DB_NAME);
 })
 
 app.listen(port, () => {
