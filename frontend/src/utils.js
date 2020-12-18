@@ -14,6 +14,9 @@ const utils = {
     verifyOTP : function(obj){
         console.log(obj)
         return axios.post("/api/verifyOTP",{otp:obj.otp,reqId:obj.reqId}).then(response => response.data);
+    },
+    verifyAuth: function(){
+        return axios.get("/api/auth").then((response)=>response.data);
     }
 }
 
