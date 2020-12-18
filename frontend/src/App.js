@@ -1,11 +1,20 @@
+import HomePage  from "./Pages/HomePage";
 import './App.css';
+import {
+  BrowserRouter as Router, Route, Switch
+} from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      Hello
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/" exact>
+          <HomePage/>
+        </Route>
+      </Switch>
+    </Router>
   );
 }
+
 
 export default App;
