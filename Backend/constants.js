@@ -8,6 +8,7 @@ module.exports = {
     },
     names:{
         DB_NAME : "qmgm",
-        COLLECTION_NAME : "Bank"
+        COLLECTION_NAME : "Bank",
+        BRAND : "Hackademic"
     }
 };
