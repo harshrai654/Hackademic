@@ -70,15 +70,43 @@ const createTimeSlotArray = function(){
         slots.push({
             start,
             end,
-            alloted : 0
+            alloted : 0,
+            alotee:[]
         })
     }
     return slots;
+}
+
+const bookSlot = function(client,slot){
+    console.log(slot)
+    const db = client.db(constants.names.DB_NAME);
+    const bankCollection = db.collection(slot.collectionName);
+
+    bankCollection.updateOne(
+        {date:new Date(slot.date)},
+        {$push:
+            {alotee:
+                {reqId:slot.reqId,mobile:slot.mobile}
+            },
+        },
+        {$inc:
+            {
+                alloted:1
+            }
+        },
+        function(err,res){
+            if(err)console.log(err);
+            else {
+                console.log(res)
+            }
+        }
+    )
 }
 
 module.exports = {
     connect,
     addBank,
     fetchBanks,
-    fetchBankData
+    fetchBankData,
+    bookSlot
 }
