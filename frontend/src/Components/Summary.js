@@ -12,7 +12,7 @@ const Summary = function(props){
             <Descriptions.Item label="Date">{formDate}</Descriptions.Item>
             <Descriptions.Item label="Time-Slot">{`${slotBooked.start}-${slotBooked.end}`}</Descriptions.Item>
             <Descriptions.Item label="Location">
-                <a href={`http://maps.google.com/?q=${props.bank.lat},${props.bank.lng}`} target="_blank">
+                <a href={`http://maps.google.com/?q=${props.bank.lat},${props.bank.lng}`} target="_blank" rel="noreferrer">
                     <EnvironmentTwoTone/>
                 </a>
             </Descriptions.Item>
