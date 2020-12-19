@@ -28,6 +28,7 @@ class SelectTimePage extends React.Component{
         }
 
         this.selectSlot = this.selectSlot.bind(this);
+        this.bookSlot = this.bookSlot.bind(this);
     }
 
     componentDidMount(){
@@ -64,6 +65,20 @@ class SelectTimePage extends React.Component{
         })
     }
 
+    bookSlot(){
+        const slot = {
+            reqId:this.state.reqId,
+            mobile:this.state.mobile,
+            date:this.state.date,
+            selectedSlot:this.state.selectedSlot,
+            collectionName:this.state.bank.lat.concat(this.state.bank.lng)
+        }
+
+        utils.bookSlot(slot).then(data=>{
+            console.log(data)
+        })
+    }
+
     render(){
         return(
             <div>
@@ -92,7 +107,7 @@ class SelectTimePage extends React.Component{
                                         slots={this.state.slots}
                                     />
                                     <Divider/>
-                                    <Button type="danger" size="large">
+                                    <Button type="danger" size="large" onClick={this.bookSlot}>
                                         Book
                                     </Button>
                                 </Col>
