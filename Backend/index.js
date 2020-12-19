@@ -5,6 +5,7 @@ const port = process.env.port || 3000 ;
 const constants = require("./constants");
 const bodyParser = require("body-parser");
 const Nexmo = require("nexmo");
+const init = require("./init");
 const nexmo = new Nexmo({
   apiKey : process.env.OTP_API_KEY,
   apiSecret : process.env.OTP_SECREAT_KEY
@@ -30,9 +31,6 @@ app.use(session({
 }))
 app.use(bodyParser.json());
 
-//connecting to DB
-db.connect(client).catch(console.error);
-
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
@@ -51,10 +49,8 @@ app.get("/api/fetchKey",(req,res)=>{
 app.get("/api/getBanks", (req,res)=>{
 
   if(req.session.id){
-    const db = client.db(constants.names.DB_NAME);
-    const bankCollection = db.collection(constants.names.COLLECTION_NAME);
-
-    bankCollection.find({}).toArray((err,docs)=>{
+    const bankCollection = db.fetchBanks(client);
+    bankCollection.toArray((err,docs)=>{
       if(err){
         console.log(constants.messages.BANK_DOC_FAIL)
       }else{
@@ -128,4 +124,8 @@ app.post("/api/verifyOTP",(req,res)=>{
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
+
+  //connecting to DB
+  db.connect(client).then(()=>init.initDB(client)).catch(console.error);
+
 })

@@ -8,7 +8,14 @@ module.exports = {
     },
     names:{
         DB_NAME : "qmgm",
-        COLLECTION_NAME : "Bank",
+        COLLECTION_NAME : "Banks",
         BRAND : "Hackademic"
+    },
+    init: {
+        ADD_NEW_BANK: "Do you want to add new bank (y/n)?",
+        DEFAULT_LIST: "Iniitating with available bank list",
+        BANK_NAME: "Enter Bank name : ",
+        BANK_LAT : "Enter location (Latitude) : ",
+        BANK_LNG : "Enter location (Logitude) : "
     }
 };
