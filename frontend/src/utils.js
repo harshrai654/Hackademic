@@ -17,6 +17,9 @@ const utils = {
     },
     verifyAuth: function(){
         return axios.get("/api/auth").then((response)=>response.data);
+    },
+    getBankSlots: function(data){
+        return axios.post("/api/getBankData",data).then(response=>response.data);
     }
 }
 
