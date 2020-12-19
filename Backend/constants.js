@@ -16,6 +16,7 @@ module.exports = {
         DEFAULT_LIST: "Iniitating with available bank list",
         BANK_NAME: "Enter Bank name : ",
         BANK_LAT : "Enter location (Latitude) : ",
-        BANK_LNG : "Enter location (Logitude) : "
+        BANK_LNG : "Enter location (Logitude) : ",
+        BANK_CAP : "Enter Capacity in each slot : "
     }
 };

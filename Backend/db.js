@@ -23,8 +23,8 @@ const addBank = function(bank,client){
       if(err)
         console.log(err)
       else{
-            db.createCollection(bank.name)
-            const bankNameCollection = db.collection(bank.name);
+            const bankNameCollection = db.collection(bank.lat + bank.lng);
+            bankNameCollection.insertOne({capacity:bank.cap})
             bank.avbl.forEach(date => {
                 let temp = new Date(date);
                 if(temp.getDay() === 0 || temp.getDay() === 6)return;
@@ -36,6 +36,24 @@ const addBank = function(bank,client){
           console.log(`${r.insertedCount} Bank added !`)
       }
   })
+}
+
+const fetchBankData = function(bank,client,callBack){
+    const latlng = bank.lat.concat(bank.lng);
+    const date = new Date(bank.date);
+
+    console.log(latlng,date)
+
+    const db = client.db(constants.names.DB_NAME);
+    const bankCollection = db.collection(latlng);
+    bankCollection.find({date}).toArray(function(err,docs){
+        if(err)console.log(err)
+        else{
+            
+            callBack(docs)
+        }
+    })
+
 }
 
 const fetchBanks = function(client){
@@ -61,5 +79,6 @@ const createTimeSlotArray = function(){
 module.exports = {
     connect,
     addBank,
-    fetchBanks
+    fetchBanks,
+    fetchBankData
 }
