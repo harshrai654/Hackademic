@@ -10,7 +10,8 @@ class HomePage extends React.Component{
 
         this.state = {
             banks : [],
-            bank : {}
+            bank : {},
+            key : ""
         }
     }
 
@@ -18,6 +19,10 @@ class HomePage extends React.Component{
         utils.fetchBanks().then((banks)=>{
             // console.log(banks)
             this.setState({banks})
+        })
+
+        utils.fetchBanks().then(key=>{
+            this.setState({key})
         })
     }
     
@@ -30,13 +35,14 @@ class HomePage extends React.Component{
     render(){
         return(
            <Row gutter={16}>
-               <Col className = "gutter-row" offset = {1} span={12}>
+               <Col className = "gutter-row" offset = {1} span={10}>
                     <BankSelector banks={this.state.banks} handleBankChange={(index)=>{this.handleBankChange(index)}}/>
                </Col>
-               <Col className = "gutter-row" offset = {1} span={12}>
+               <Col className = "gutter-row" offset = {1} span={10}>
                     <BankMap location={{
                             lat:this.state.bank.lat,
-                            lng:this.state.lng
+                            lng:this.state.lng,
+                            key: this.state.key
                         }}/>
                </Col>
            </Row>     
