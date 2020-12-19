@@ -137,7 +137,15 @@ app.post("/api/bookSlot",(req,res)=>{
   
   // if(req.session.reqId){
     
-    db.bookSlot(client,req.body)
+    db.bookSlot(client,req.body,(data)=>{
+      if(data.status){
+        console.log(`Alotted ${data.reqId}`)
+      }else{
+        console.log("Duplicate data")
+      }
+
+      res.json(data);
+    })
   // }else{
     // res.status(401)
   // }
