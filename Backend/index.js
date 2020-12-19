@@ -133,6 +133,16 @@ app.post("/api/getBankData",(req,res)=>{
   }
 })
 
+app.post("/api/bookSlot",(req,res)=>{
+  
+  // if(req.session.reqId){
+    
+    db.bookSlot(client,req.body)
+  // }else{
+    // res.status(401)
+  // }
+})
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 
