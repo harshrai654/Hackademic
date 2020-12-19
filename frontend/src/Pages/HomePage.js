@@ -1,4 +1,5 @@
 import React from "react";
+import {Redirect} from "react-router-dom";
 import {Row,Col,Divider,Button,Alert,Modal,Form,Input,Spin} from "antd";
 import {RightOutlined} from "@ant-design/icons"; 
 import BankSelector from "../Components/BankSelector";
@@ -9,7 +10,6 @@ import utils from "../utils";
 class HomePage extends React.Component{
     constructor(props){
         super(props);
-
         this.state = {
             banks : [],
             bank : {},
@@ -93,7 +93,6 @@ class HomePage extends React.Component{
                 error:false,
             })
             utils.verifyOTP({otp,reqId:this.state.reqId}).then(data=>{
-                console.log(data)
                 if(data.status){
                     this.setState({
                         loading:false,
@@ -111,6 +110,8 @@ class HomePage extends React.Component{
 
     render(){
         var disbaled = !(this.state.bank && this.state.date);
+        var nextPage = (this.state.mobile && !this.state.otpVerify && this.state.reqId && !this.state.error && !this.state.loading);
+
         const tailLayout = {
             wrapperCol: {
               offset: 20,
@@ -118,76 +119,89 @@ class HomePage extends React.Component{
             },
         };
         return(
-            
-            <Row justify="center" align="middle" gutter={24}>
-                <Modal okText="Verify" title="OTP verification" visible={this.state.otpVerify} onCancel={this.handleCancel} footer={[]}>
-                    {this.state.error && !this.state.mobile && <Alert message="Something went wrong" type="error" showIcon closable/> }
-                    {this.state.mobile ? (
-                        <Form name="otp" onFinish={this.verifyOTP}>
-                            <Form.Item
-                                label="OTP"
-                                name="otp"
-                                hidden={this.state.loading}
-                                rules={[
-                                    {
-                                        required:true,
-                                        message: "Please enter sent OTP!"
-                                    }
-                                ]}
-                            >
-                                <Input type="number" />
-                            </Form.Item>
-                            <Form.Item {...tailLayout} hidden={this.state.loading}>
-                                <Button type="primary" htmlType="submit">
-                                    Verify OTP
-                                </Button>
-                            </Form.Item>
-                            {this.state.loading && <Spin size="large"/>}
-                        </Form>
-                    ) : (
-                        <Form name="otpDetails" onFinish={this.sendOTP}>
-                            <Form.Item
-                                label="Mobile number"
-                                name="mobile"
-                                hidden={this.state.loading}
-                                rules={[
-                                    {
-                                        required:true,
-                                        message: "Please enter your mobile number!"
-                                    }
-                                ]}
-                            >
-                                <Input type="number" />
-                            </Form.Item>
-                            <Form.Item {...tailLayout} hidden={this.state.loading}>
-                                <Button type="primary" htmlType="submit">
-                                    Send OTP
-                                </Button>
-                            </Form.Item>
-                            {this.state.loading && <Spin size="large"/>}
-                        </Form>
-                    )}
-                </Modal> 
-                <Col className = "gutter-row" offset = {1} span={10}>
-                    <BankSelector banks={this.state.banks} handleBankChange={(index)=>{this.handleBankChange(index)}}/>
-                    <Divider/>
-                    <Availability avbl = {this.state.bank.avbl} selectedDate={this.state.date} onDateSelect={this.onDateSelect}/>
-                </Col>
-                <Col className = "gutter-row" offset = {1} span={10}>
-                    <BankMap location={{
-                            lat:this.state.bank.lat,
-                            lng:this.state.bank.lng,
-                            key: this.state.key,
-                            name : this.state.bank.name
-                        }}/>
-                    <Divider/>
-                    <Row justify="end">
-                        <Button size="large" icon={<RightOutlined />} type="primary"  disabled={disbaled} onClick={this.onNextClick}>
-                            Next
-                        </Button>  
-                    </Row>
-                </Col>
-            </Row>     
+            <div>
+                {nextPage ? (
+                    <Redirect to={{
+                        pathname:"selectTime",
+                        state : {
+                            bank: this.state.bank,
+                            date: this.state.date,
+                            mobile: this.state.mobile,
+                            reqId: this.state.reqId
+                        }
+                    }}/>
+                ):(
+                    <Row justify="center" align="middle" gutter={24}>
+                        <Modal okText="Verify" title="OTP verification" visible={this.state.otpVerify} onCancel={this.handleCancel} footer={[]}>
+                            {this.state.error && !this.state.mobile && <Alert message="Something went wrong" type="error" showIcon closable/> }
+                            {this.state.mobile ? (
+                                <Form name="otp" onFinish={this.verifyOTP}>
+                                    <Form.Item
+                                        label="OTP"
+                                        name="otp"
+                                        hidden={this.state.loading}
+                                        rules={[
+                                            {
+                                                required:true,
+                                                message: "Please enter sent OTP!"
+                                            }
+                                        ]}
+                                    >
+                                        <Input type="number" />
+                                    </Form.Item>
+                                    <Form.Item {...tailLayout} hidden={this.state.loading}>
+                                        <Button type="primary" htmlType="submit">
+                                            Verify OTP
+                                        </Button>
+                                    </Form.Item>
+                                    {this.state.loading && <Spin size="large"/>}
+                                </Form>
+                            ) : (
+                                <Form name="otpDetails" onFinish={this.sendOTP}>
+                                    <Form.Item
+                                        label="Mobile number"
+                                        name="mobile"
+                                        hidden={this.state.loading}
+                                        rules={[
+                                            {
+                                                required:true,
+                                                message: "Please enter your mobile number!"
+                                            }
+                                        ]}
+                                    >
+                                        <Input type="number" />
+                                    </Form.Item>
+                                    <Form.Item {...tailLayout} hidden={this.state.loading}>
+                                        <Button type="primary" htmlType="submit">
+                                            Send OTP
+                                        </Button>
+                                    </Form.Item>
+                                    {this.state.loading && <Spin size="large"/>}
+                                </Form>
+                            )}
+                        </Modal> 
+                        <Col className = "gutter-row" offset = {1} span={10}>
+                            <BankSelector banks={this.state.banks} handleBankChange={(index)=>{this.handleBankChange(index)}}/>
+                            <Divider/>
+                            <Availability avbl = {this.state.bank.avbl} selectedDate={this.state.date} onDateSelect={this.onDateSelect}/>
+                        </Col>
+                        <Col className = "gutter-row" offset = {1} span={10}>
+                            <BankMap location={{
+                                    lat:this.state.bank.lat,
+                                    lng:this.state.bank.lng,
+                                    key: this.state.key,
+                                    name : this.state.bank.name
+                                }}/>
+                            <Divider/>
+                            <Row justify="end">
+                                <Button size="large" icon={<RightOutlined />} type="primary"  disabled={disbaled} onClick={this.onNextClick}>
+                                    Next
+                                </Button>  
+                            </Row>
+                        </Col>
+                    </Row>     
+                )}
+            </div>
         ); 
     }
 };
