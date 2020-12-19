@@ -77,30 +77,50 @@ const createTimeSlotArray = function(){
     return slots;
 }
 
-const bookSlot = function(client,slot){
+const bookSlot = function(client,slot,callBack){
     console.log(slot)
     const db = client.db(constants.names.DB_NAME);
     const bankCollection = db.collection(slot.collectionName);
 
-    bankCollection.updateOne(
-        {date:new Date(slot.date)},
-        {$push:
-            {alotee:
-                {reqId:slot.reqId,mobile:slot.mobile}
-            },
-        },
-        {$inc:
-            {
-                alloted:1
-            }
-        },
-        function(err,res){
-            if(err)console.log(err);
-            else {
-                console.log(res)
+    bankCollection.findOne({date:new Date(slot.date)},function(err,res){
+        if(err)console.log(err);
+        else {
+            const updatedSlot = res.timeSlots[slot.selectedSlot];
+            const prvsAlotee = updatedSlot.alotee;
+            if(notDuplicateAlotee(prvsAlotee,slot.mobile)){
+
+                updatedSlot.alloted++;
+                updatedSlot.alotee.push({
+                    reqId:slot.reqId,
+                    mobile:slot.mobile
+                });
+                
+                bankCollection.updateOne(
+                    {date:new Date(slot.date)},
+                    {$set:{[`timeSlots.${slot.selectedSlot}`]:updatedSlot}},
+                    function(err,res){
+                        if(err)console.log(err)
+                        else{
+                            callBack({
+                                status:true,
+                                reqId:slot.reqId
+                            })
+                        }
+                    }
+                )
+            }else{
+                callBack({status:false})
             }
         }
-    )
+    })
+}
+
+const notDuplicateAlotee = function(alotee,mobile){
+    if(!alotee.length)return true;
+    for(let i = 0; i < alotee.length; i++){
+        if(alotee[i].mobile === mobile)return false;
+    }
+    return true;
 }
 
 module.exports = {
