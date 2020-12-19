@@ -47,6 +47,7 @@ app.get("/api/fetchKey",(req,res)=>{
   }
 })
 
+
 app.get("/api/getBanks", (req,res)=>{
 
   if(req.session.id){
@@ -90,6 +91,14 @@ app.post("/api/sendOTP",(req,res)=>{
   
 })
 
+app.get("/api/auth" ,(req,res)=>{
+  if(req.session.reqId){
+    res.send({status:true})
+  }else{
+    res.send({status:false})
+  }
+})
+
 app.post("/api/verifyOTP",(req,res)=>{
   console.log(req.body)
   if(req.session.id){
@@ -104,7 +113,10 @@ app.post("/api/verifyOTP",(req,res)=>{
       if(err)res.send({status:false});
       else{
         if(result.error_text)res.send({status:false})
-        else res.send({status:true});
+        else {
+          req.session.reqId = reqId;
+          res.send({status:true});
+        }
         console.log(result);
       }
     })
