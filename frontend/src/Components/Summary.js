@@ -1,6 +1,7 @@
 import React from "react";
-import {Descriptions} from "antd";
+import {Descriptions,Alert} from "antd";
 import {EnvironmentTwoTone} from "@ant-design/icons";
+import DescriptionsItem from "antd/lib/descriptions/Item";
 
 const Summary = function(props){
     const formDate = `${props.date.getDate()} / ${props.date.getMonth()+1} /${props.date.getFullYear()}`;
@@ -16,6 +17,12 @@ const Summary = function(props){
                     <EnvironmentTwoTone/>
                 </a>
             </Descriptions.Item>
+            <Descriptions.Item label="Error">
+                {props.error && !props.alloted && <Alert message="You already have a scheduled booking" type="error" />}
+            </Descriptions.Item>
+            <DescriptionsItem lable="Success">
+                {props.alloted && !props.error && <Alert message={`Booked successfully. Your verification link is : http://localhost:4080/?q=${props.reqId}`} type="success" />}
+            </DescriptionsItem>
         </Descriptions>
     );
 }

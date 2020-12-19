@@ -12,6 +12,8 @@ class SelectTimePage extends React.Component{
         if(this.props.location && this.props.location.state){
             this.state = {
                 auth:true,
+                error:false,
+                alloted:false,
                 slots:[],
                 ...this.props.location.state
             }
@@ -23,7 +25,9 @@ class SelectTimePage extends React.Component{
                 mobile: "",
                 reqId: "",
                 slots:[],
-                selectedSlot:-1
+                selectedSlot:-1,
+                error:false,
+                alloted:false
             }
         }
 
@@ -75,7 +79,19 @@ class SelectTimePage extends React.Component{
         }
 
         utils.bookSlot(slot).then(data=>{
-            console.log(data)
+            if(data.status){
+                if(data.reqId === this.state.reqId){
+                    this.setState({
+                        error:false,
+                        alloted:true
+                    })
+                }
+            }else{
+                this.setState({
+                    error:true,
+                    alloted:false
+                })
+            }
         })
     }
 
@@ -105,6 +121,9 @@ class SelectTimePage extends React.Component{
                                         date={this.state.date}
                                         mobile={this.state.mobile}
                                         slots={this.state.slots}
+                                        reqId={this.state.reqId}
+                                        alloted={this.state.alloted}
+                                        error={this.state.error}
                                     />
                                     <Divider/>
                                     <Button type="danger" size="large" onClick={this.bookSlot}>
