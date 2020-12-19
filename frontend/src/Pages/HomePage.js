@@ -1,5 +1,5 @@
 import React from "react";
-import {Row,Col,Divider,Button,Modal,Form,Input,Spin} from "antd";
+import {Row,Col,Divider,Button,Alert,Modal,Form,Input,Spin} from "antd";
 import {RightOutlined} from "@ant-design/icons"; 
 import BankSelector from "../Components/BankSelector";
 import BankMap from "../Components/BankMap";
@@ -18,13 +18,15 @@ class HomePage extends React.Component{
             otpVerify : false,
             loading : false,
             mobile:"",
-            error:false
+            error:false,
+            reqId:""
         }
 
         this.onDateSelect = this.onDateSelect.bind(this);
         this.onNextClick = this.onNextClick.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.sendOTP = this.sendOTP.bind(this);
+        this.verifyOTP = this.verifyOTP.bind(this);
     }
 
     componentDidMount(){
@@ -62,9 +64,48 @@ class HomePage extends React.Component{
         const {mobile} = value;
         if(mobile.length === 10){
             this.setState({
+                error:false,
                 loading:true
             })
-            utils.sendOTP(mobile)
+            utils.sendOTP(mobile).then(data=>{
+                console.log(data)
+                if(data.status){
+                    this.setState({
+                        loading:false,
+                        mobile,
+                        reqId : data.req_id
+                    })
+                }else{
+                    this.setState({
+                        loading:false,
+                        error:true
+                    })
+                }
+            })
+        }
+    }
+
+    verifyOTP(value){
+        const {otp} = value;
+        if(otp.length === 4 && this.state.reqId){
+            this.setState({
+                loading:true,
+                error:false,
+            })
+            utils.verifyOTP({otp,reqId:this.state.reqId}).then(data=>{
+                console.log(data)
+                if(data.status){
+                    this.setState({
+                        loading:false,
+                        otpVerify:false,
+                    })
+                }
+            })
+        }else{
+            this.setState({
+                loading:false,
+                error:true
+            })
         }
     }
 
@@ -80,7 +121,7 @@ class HomePage extends React.Component{
             
             <Row justify="center" align="middle" gutter={24}>
                 <Modal okText="Verify" title="OTP verification" visible={this.state.otpVerify} onCancel={this.handleCancel} footer={[]}>
-
+                    {this.state.error && !this.state.mobile && <Alert message="Something went wrong" type="error" showIcon closable/> }
                     {this.state.mobile ? (
                         <Form name="otp" onFinish={this.verifyOTP}>
                             <Form.Item
