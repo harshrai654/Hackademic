@@ -6,7 +6,7 @@ const TimeSlots = function(props){
     const formDate = date.getFullYear()+'/'+(date.getMonth()+1)+'/'+ date.getDate(); 
     return(
         <div>
-            {props.slots && (   
+            {props.slots && !props.alloted && (   
                 <Row justify="center" gutter={16}>
                     <Card title={`Bank : ${props.bank.name}`} extra={`Date: ${formDate} | Mobile: ${props.mobile}`} >
                         <Row justify="center" gutter={16}>
@@ -16,11 +16,12 @@ const TimeSlots = function(props){
                             const checked = props.selectedSlot === index;
                             if(ratio < 0.5)slotProp = {color:"green",text:"Available"};
                             else if(ratio >= 0.5 && ratio < 0.7)slotProp = {color:"orange",text:"Crowding"};
-                            else slotProp = {color:"red",text:"Almost full"}
+                            else if(ratio >= 0.7 && ratio < 1 )slotProp = {color:"red",text:"Almost full"}
+                            else slotProp = {color:"volcano",text:"Crowded"}
 
                             return(
                                 <Col>
-                                    <Card hoverable={true}>
+                                    <Card hoverable={ratio === 1?false:true}>
                                         <Descriptions.Item>
                                             {` Time: ${slot.start} - ${slot.end}` }
                                             <br/>
@@ -28,7 +29,7 @@ const TimeSlots = function(props){
                                             <Tag color={slotProp.color}>{slotProp.text}</Tag>
                                             <br/>
                                             <br/>
-                                            <Checkbox checked={checked} onChange={()=>props.selectSlot(index)}/>
+                                            {ratio !== 1 && <Checkbox checked={checked} onChange={()=>props.selectSlot(index)}/>}
                                         </Descriptions.Item>
                                     </Card>   
                                 </Col>

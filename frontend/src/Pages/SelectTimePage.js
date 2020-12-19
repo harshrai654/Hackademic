@@ -110,6 +110,7 @@ class SelectTimePage extends React.Component{
                                     slots={this.state.slots}
                                     selectSlot={this.selectSlot}
                                     selectedSlot={this.state.selectedSlot}
+                                    alloted={this.state.alloted}
                                 />
                             </Row>
                             {this.state.selectedSlot !== -1 && (this.state.selectedSlot || this.state.selectedSlot === 0 ) && (
@@ -126,9 +127,11 @@ class SelectTimePage extends React.Component{
                                         error={this.state.error}
                                     />
                                     <Divider/>
-                                    <Button type="danger" size="large" onClick={this.bookSlot}>
-                                        Book
-                                    </Button>
+                                    {!this.state.alloted && (
+                                        <Button type="danger" size="large" onClick={this.bookSlot}>
+                                            Book
+                                        </Button>
+                                    )}
                                 </Col>
                             </Row>
                             )}
