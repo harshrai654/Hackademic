@@ -1,6 +1,7 @@
 import React from "react";
 import {Descriptions,Alert} from "antd";
 import {EnvironmentTwoTone} from "@ant-design/icons";
+import {Link} from "react-router-dom";
 
 const Summary = function(props){
     const formDate = `${props.date.getDate()} / ${props.date.getMonth()+1} /${props.date.getFullYear()}`;
@@ -17,10 +18,18 @@ const Summary = function(props){
                 </a>
             </Descriptions.Item>
             <Descriptions.Item label="Status">
-                {props.error && !props.alloted && <Alert message="You already have a scheduled booking" type="error" />}
+                {props.error && !props.alloted  && <Alert message="You already have a scheduled booking" type="error" />}
                 {props.alloted && !props.error && (<div>
                     <Alert message="Booked successfully. Your verification link is: " type="success" />
-                    <a href={`http://localhost:4080/?q=${props.reqId}`} target="_blank" rel="noreferrer">Click here </a>
+                    <Link to={{
+                        pathname:`/verify`,
+                        state:{
+                            reqId:props.reqId,
+                            collName:props.bank.lat.concat(props.bank.lng),
+                            slotIndex:props.selectedSlot,
+                            _id:props._id
+                        }
+                    }}>Click here </Link>
                     </div>
                 )}
             </Descriptions.Item>

@@ -95,15 +95,17 @@ const bookSlot = function(client,slot,callBack){
                     mobile:slot.mobile
                 });
                 
-                bankCollection.updateOne(
+                bankCollection.findOneAndUpdate(
                     {date:new Date(slot.date)},
                     {$set:{[`timeSlots.${slot.selectedSlot}`]:updatedSlot}},
-                    function(err,res){
+                    function(err,docs){
                         if(err)console.log(err)
                         else{
                             callBack({
                                 status:true,
-                                reqId:slot.reqId
+                                reqId:slot.reqId,
+                                slot:slot.selectedSlot,
+                                _id:docs.value._id
                             })
                         }
                     }

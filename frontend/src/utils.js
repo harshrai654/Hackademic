@@ -28,7 +28,11 @@ const utils = {
 
     bookSlot:function(slot){
         return axios.post("/api/bookSlot",slot).then(response=>response.data);
-    }
+    },
+
+    // verify:function(data){
+        
+    // }
 }
 
 export default utils;

@@ -1,5 +1,6 @@
 import HomePage  from "./Pages/HomePage";
 import SelectTimePage  from "./Pages/SelectTimePage";
+import VerifyPage from "./Pages/VerifyPage"
 import './App.css';
 import {
   BrowserRouter as Router, Route, Switch
@@ -13,6 +14,7 @@ function App() {
           <HomePage/>
         </Route>
         <Route path="/selectTime" component={SelectTimePage} exact/>
+        <Route path="/verify" component={VerifyPage} exact/>
       </Switch>
     </Router>
   );

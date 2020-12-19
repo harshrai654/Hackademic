@@ -8,8 +8,22 @@ import Summary from "../Components/Summary"
 class SelectTimePage extends React.Component{
     constructor(props){
         super(props);
-        console.log(this.props.location)
-        if(this.props.location && this.props.location.state){
+
+        if(localStorage.getItem("_id")){
+            this.state = {
+                auth:true,
+                error:false,
+                alloted:true,
+                reqId:localStorage.getItem("reqId"),
+                selectedSlot:localStorage.getItem("s"),
+                _id:localStorage.getItem("_id"),
+                bank:JSON.parse(localStorage.getItem("bank")),
+                date:new Date(localStorage.getItem("date")),
+                mobile:localStorage.getItem("mobile"),
+                slots:JSON.parse(localStorage.getItem("slots")) 
+            }
+        }
+        else if(this.props.location && this.props.location.state){
             this.state = {
                 auth:true,
                 error:false,
@@ -27,7 +41,8 @@ class SelectTimePage extends React.Component{
                 slots:[],
                 selectedSlot:-1,
                 error:false,
-                alloted:false
+                alloted:false,
+                _id:"",
             }
         }
 
@@ -37,29 +52,33 @@ class SelectTimePage extends React.Component{
 
     componentDidMount(){
         //Auth Code for prvs user//
-        utils.verifyAuth().then(data=>{
-            console.log(data)
-            if(data.status){
-                this.setState({
-                    auth:true
-                })
-            }else{
-                this.setState({
-                    auth:false
-                })
-            }
-        })
-
-        utils.getBankSlots({
-            lat:this.state.bank.lat,
-            lng:this.state.bank.lng,
-            date:this.state.date
-        }).then(data=>{
-            console.log(data)
-            this.setState({
-                slots:data[0].timeSlots
+        
+        if(!localStorage.getItem("_id")){
+            utils.verifyAuth().then(data=>{
+                console.log(data)
+                if(data.status){
+                    this.setState({
+                        auth:true
+                    })
+                }else{
+                    this.setState({
+                        auth:false
+                    })
+                }
             })
-        })
+    
+            utils.getBankSlots({
+                lat:this.state.bank.lat,
+                lng:this.state.bank.lng,
+                date:this.state.date
+            }).then(data=>{
+                console.log(data)
+                this.setState({
+                    slots:data[0].timeSlots
+                })
+            })    
+        }
+        
     }
 
     selectSlot(index){
@@ -81,9 +100,21 @@ class SelectTimePage extends React.Component{
         utils.bookSlot(slot).then(data=>{
             if(data.status){
                 if(data.reqId === this.state.reqId){
+
+                    localStorage.setItem("_id",data._id)
+                    localStorage.setItem("s",data.slot)
+                    localStorage.setItem("reqId",this.state.reqId)
+                    localStorage.setItem("collName",this.state.bank.lat.concat(this.state.bank.lng))
+                    localStorage.setItem("bank",JSON.stringify(this.state.bank))
+                    localStorage.setItem("date",this.state.date)
+                    localStorage.setItem("mobile",this.state.mobile)
+                    localStorage.setItem("slots",JSON.stringify(this.state.slots))
+
                     this.setState({
                         error:false,
-                        alloted:true
+                        alloted:true,
+                        selectedSlot:data.slot,
+                        _id:data._id
                     })
                 }
             }else{
@@ -99,7 +130,7 @@ class SelectTimePage extends React.Component{
         return(
             <div>
                 {   
-                    this.state.auth ? (
+                    (this.state.auth && this.state.date) ? (
                         <div>
                             <Row gutter={16} justify="space-around">
                                 <TimeSlots 
@@ -125,6 +156,7 @@ class SelectTimePage extends React.Component{
                                         reqId={this.state.reqId}
                                         alloted={this.state.alloted}
                                         error={this.state.error}
+                                        _id={this.state._id}
                                     />
                                     <Divider/>
                                     {!this.state.alloted && (

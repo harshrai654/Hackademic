@@ -32,7 +32,7 @@ app.use(session({
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.status(200)
 })
 
 app.get("/api/fetchKey",(req,res)=>{

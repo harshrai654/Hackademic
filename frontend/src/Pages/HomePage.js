@@ -10,6 +10,8 @@ import utils from "../utils";
 class HomePage extends React.Component{
     constructor(props){
         super(props);
+
+        localStorage.clear()
         this.state = {
             banks : [],
             bank : {},
